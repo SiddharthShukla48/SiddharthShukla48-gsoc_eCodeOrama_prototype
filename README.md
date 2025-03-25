@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # eCodeOrama
 
 eCodeOrama is an interactive educational tool for visualizing and analyzing the flow of Scratch programs. It extracts program data from MIT Scratch (.sb3) files, then displays the relationships between sprites, events, and scripts in a variety of ways—including grid, graph, and tree layouts. The output is compatible with the traditional CodeOrama layout and also supports exports (PDF, text, CSV, Excel, JSON, and images) for further analysis or presentation.
@@ -198,4 +199,4 @@ The application allows you to customize the visualization:
 
 Settings are saved using QSettings and can be exported/imported via JSON files.
 
----
+
