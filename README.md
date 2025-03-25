@@ -1,174 +1,201 @@
-### eCodeOrama, an educational interactive flow visualization tool for mit scratch programs
+# eCodeOrama
 
-#### Brief explanation
+eCodeOrama is an interactive educational tool for visualizing and analyzing the flow of Scratch programs. It extracts program data from MIT Scratch (.sb3) files, then displays the relationships between sprites, events, and scripts in a variety of ways—including grid, graph, and tree layouts. The output is compatible with the traditional CodeOrama layout and also supports exports (PDF, text, CSV, Excel, JSON, and images) for further analysis or presentation.
 
-The project will create a interactive tool to extract, visualize graphically and edit (to improve the presentation of) the layout of the flow of code in blocks / scripts in a mit scratch program and their interaction with any messages or other external events. The tool will use rules to decide on many layout parameters (e.g. the position of the code blocks in the layout, the colors used, etc) but the user will be able to overwrite the default choices. The presentation will be compatible with the codeOrama code layout specification.
-The tool will also promote code understanding, especially to young students that use scratch, and will include debugging aids.
-The students can use this flow to better visualize and understand their program, to explain it to others, to debug it and to design extensions and modifications.
+---
 
-#### Why is it important
+## Table of Contents
 
-Programming with visual / blockly languages
-([`scratch`](https://scratch.mit.edu), [makecode](https://makecode.microbit.org/), etc)
-is quite common in the young ages.
-This tool will be specific to ([`scratch`](https://scratch.mit.edu) and will later be extended to handle more languages and visualizations.
+- [Overview](#overview)
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Installation & Setup](#installation--setup)
+- [Usage](#usage)
+- [Visualization Modes](#visualization-modes)
+- [Export Options](#export-options)
+- [Configuration & Customization](#configuration--customization)
 
-An intuitive approach to this kind of programming is the creation of many threads/*scripts* that communicate through *messages*.
-Yet, in many cases the resulting execution flow is tricky to follow,
-but would be very useful from an educational perspective (and for debugging too).
+---
 
-We will make an interactive tool to parse a computer program and reveal this flow,
-mainly the inter-thread communication.
-The input programming language will be processed as `json` structures.
-Communication among different threads and components will be shown explicitly.
+## Overview
 
-#### Github of the project
-git@github.com:sarantos40/eCodeOrama.git
+eCodeOrama parses Scratch projects to extract:
+- **Sprites:** Visual objects in Scratch.
+- **Events:** Triggers (e.g., flag clicked, key pressed, broadcast received).
+- **Scripts:** Blocks of code (scripts) that run in response to events.
+- **Connections:** Communication links formed by broadcast messages between scripts.
 
-#### Expected Results
+This data is then visualized interactively. Users can view the program flow in different layouts and export the results for offline use or further editing.
 
-A tool to visualize and edit the layout of the event based script flow of a scratch program, keeping it compatible with the codeOrama code layout specification.
+---
 
-#### Knowledge Prerequisites
+## Features
 
-python, mit scratch, gui development
+- **Parsing Scratch Files:**  
+  Uses `parser.py` to read .sb3 files (which are essentially ZIP archives of JSON) and extract sprites, events, scripts, and message connections.
 
-#### Related bibliography
+- **Multiple Visualization Modes:**  
+  - **Grid View:** Displays a table-like layout with sprites as columns, events as rows, and scripts as cells.  
+  - **Graph View:** Uses a force-directed layout (powered by `networkx`) to show sprites and scripts as nodes with message connections as directed edges.  
+  - **Tree View:** Presents a hierarchical tree layout starting from a chosen root event (e.g. flag clicked).
 
-  * Ladias, A., Mikropoulos, Ar., Ladias, D. & Bellou, I.  «*CodeOrama: A two-dimensional visualization tool for Scratch code to assist young learners' understanding of computer programming*».  Themes in eLearning, Vol 14 (2021).  <http://earthlab.uoi.gr/tel/index.php/themeselearn/article/view/32/18>
+- **Interactive GUI:**  
+  Built with PyQt5 in `interface.py`:
+  - File loading (Scratch .sb3 files)
+  - Visualization options (edge styles, view styles, layout algorithms for graphs, tree root selection)
+  - Report generation (textual reports of broadcasts, receives, and script layout)
+  - Save/load of configuration (custom ordering of sprites and events)
 
-  * Λαδιάς Αν., Λαδιάς Δημ.  «**Η αναπαράσταση του αλγορίθμου με τη βοήθεια του κωδικΟράματος σε περιβάλλοντα οπτικού προγραμματισμού**».  Περιοδικό «*Θέματα Επιστημών και Τεχνολογίας στην Εκπαίδευση*», τόμος 9(2), (σελ. 103-117), 2016, ISSN: 1792-8796.  <http://earthlab.uoi.gr/thete/index.php/thete/article/view/265/141>
+- **Export Capabilities:**  
+  Implemented in `export.py`, exports include:  
+  - **PDF:** A formatted layout similar to CodeOrama examples  
+  - **Text Report:** Detailed linear report showing scripts and message connections  
+  - **CSV (Edge List):** A simple list of all directed message edges  
+  - **Excel/LibreCalc:** Multi-sheet workbooks with grid, connections, and script details  
+  - **JSON:** Structured export for integration with other tools  
+  - **Image:** Current visualization exported as PNG, SVG, or PDF
 
-#### Related Links for codeOrama and tools
+- **Configuration & Customization:**  
+  Through dialogs in `config_dialogs.py` users can:
+  - Reorder sprites (columns) and events (rows)
+  - Apply automatic ordering (topological order for events or connectivity order for sprites)
+  - Toggle script folding/unfolding for minimal versus detailed views
 
-  * [Related student notes](https://www.dropbox.com/s/dk2n4plqjsnzago/2015%20Special%20programming%20topics%20in%20Scratch.pdf?e=1&dl=0)
-  * https://eproceedings.epublishing.ekt.gr/index.php/cetpe/article/view/3690
-  * https://github.com/dgmid/CodeOverview
-  * https://blog.ouseful.info/2016/02/18/blockpy-python-blockly-environment/
-  * https://scratch.mit.edu/
-  * https://mindplus.cc/en.html
-  * https://pictoblox.ai/
-  * https://developers.google.com/blockly/
-  * https://en.wikipedia.org/wiki/DOT_(graph_description_language)
-  * https://www.graphviz.org/
-  * [Description of *codeOrama* and links by Tassos Ladias](TassosLadias.html)
-  * [Other material in Greek](GreekRef)
+---
 
-#### About the flow
+## Project Structure
 
-The *primary flow* is, in most cases, the set of threads that run concurrently.
-In `python` we can create threads, but this is not very common.
-We usually start only *main*. 
-Other languages, like MIT [`scratch`](https://scratch.mit.edu) are based on threads and events.
-The [`scratch`](https://scratch.mit.edu) programming language will be processed as `json` structures.
+```
+eCodeOrama/
+├── config_dialogs.py      # Dialogs for layout and style configuration
+├── export.py              # Export functionality to PDF, text, CSV, Excel, JSON, image
+├── graph_visualizer.py    # Visualizer for force-directed graph layout using networkx
+├── Ideas.html             # Additional implementation ideas and discussion documentation
+├── interface.py           # Main PyQt5 GUI application code
+├── parser.py              # Parses Scratch .sb3 files to extract program data
+├── README.md              # This file
+├── requirements.txt       # Python package dependencies
+├── text_reports.py        # Generates detailed text-based reports
+├── tree_visualizer.py     # Visualizer for tree/hierarchical layout
+└── sb3/                   # Folder containing sample Scratch (.sb3) projects
+    └── (sample files)
+```
 
-The actual [`scratch`](https://scratch.mit.edu) code is stored in `json` (inside a `zip` file),
-which make the parsing code easier,
-and we can concentrate on the visualization.
+## Installation & Setup
 
-We will use [`scratch`](https://scratch.mit.edu), where
-every object (called *sprite*) can create its own threads (executing code in code blocks thay are called *scripts*),
-that start with their `When ...` conditonal command (which appears first in the *script*) is triggered by an *event*.
+### Requirements
 
-*Events* can have a variety of sources (such as the keyboard, the mouse or other devices).
-Any *script* can also trigger (software) *events* using `broadcast` with a message.
-They usually trigger one or more *scripts* that start with `When I receive message X`, to initiate more threads.
-Sometimes the broadcaster will wait for their completion (using the command `broadcast message X and wait`).
-Each *event* or message can initiate many concurrent threads.
-This is the flow that I consider primary, and we should start from that.
+The project depends on the following Python packages (see [requirements.txt](requirements.txt) for versions):
 
-#### CodeOrama
+- PyQt5
+- matplotlib
+- numpy
+- pandas
+- reportlab
+- xlsxwriter
+- networkx
 
-A common way to demonstrate the flow of a scratch program is `CodeOrama`.
+### Installation Steps
 
-[Here](Examples) and [Here](https://sarantos.no-ip.org/eCodeOrama/Examples) are also some *codeOrama* examples - there is more material available, but it is in Greek.
-Nevertheless, the output layout of *codeOrama*s is quite clear.
-Our output does not have to be exaclty the same, but has to be compatible, beautiful and clear.
+1. **Clone the repository:**
 
-The Layout of a `CodeOrama` mainly consists of a table where:
+   ```bash
+   git clone https://github.com/sarantos40/eCodeOrama.git
+   cd eCodeOrama
+   ```
 
-  * Each column represents a *sprite*
-  * Each rows represents an *event*
-      * *events* are
-          * messages from (the same or other) *sprites*
-          * user interface events (mouse clicks, keystrokes, ...)
-  * Each cell contains (zero or more) *scripts* (code blocks)
-      * the cell contains the any *scripts* of the *sprite* that are called on the *event*
-      * all *sprite* *scripts* are put into the appropriate rows
-      * all *event* inititated *scripts* are put into the appropriate column
-  * We include a header row and a header column that describe them (with texts and icons)
-  * Arrows connect the code line that triggers an *event* with the cell / *script* that handles it
-      * also creation of *sprite* clones
-      * maybe also calls to user defined functions
-      * and the return to the flow of the code
+2. **(Optional) Create and activate a virtual environment:**
 
-`CodeOrama` is constructed manually so far.
-Here we will develop *eCodeOrama*, an interactive tool that will help the user to create a compatible `CodeOrama` layout, and similar text reports / outputs about a [`scratch`](https://scratch.mit.edu) program.
+   ```bash
+   python -m venv venv
+   # On Windows:
+   venv\Scripts\activate
+   # On macOS/Linux:
+   source venv/bin/activate
+   ```
 
-#### MIT scratch
+3. **Install dependencies:**
 
-The visualization can be a graph, or a some text-based layout
-(with pieces of code and the appropriate edges with arrows).
-We can use a graph tool / library to handle the graph layout issues.
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-One such visualization in common use is *codeOrama*.
-The *codeOrama* is often used to provide a higher level of code description,
-but it is constructed manually.
-The idea is to make a tool to create *codeOrama*s (as export / printing operation).
+4. **Run the application:**
 
-### Getting Started
+   ```bash
+   python interface.py
+   ```
 
-The student must be already familiar
-with the programming language and the main tools that he intents to use.
+---
 
-During the discussion period the user should deepen his knowledge
-to the specifics of the problem, such as the `json` format and tools
-and the parsing of [`scratch`](https://scratch.mit.edu) input,
-to identify the significant available data, as
-*sprites*, *events*, *scripts* and commands of interest (that broadcast messages or handle *events*).
+## Usage
 
-This way, he will be able to write in detail the description of the milestones,
-especially the first ones.
+1. **Load a Scratch File:**  
+   In the application, click the "Load Scratch File" button or use the File menu → "Open Scratch File" to select a `.sb3` file.
 
-### Proposed initial implementation steps
+2. **Visualization Options:**  
+   Use the control panel at the top to choose:
+   - Edge Style (straight, curved, or improved)
+   - View Style (Grid, Graph, or Tree)
+   - For Graph view, select a layout algorithm (spring, kamada_kawai, spectral)
+   - For Tree view, pick a root event (e.g., flag_clicked)
 
-The proposal should define the expected results / milestones
-for each short period of time (e.g. each week).
-that should gradually demonstrate parts of the developed functionality.
+3. **Generate Text Reports:**  
+   Use the "Text Reports" tab to generate broadcast, receive, or script layout reports.
 
-Here is an example of such a sequence of milestones:
- 1. Week 1
-      * Parse `scratch` v3 input, identify main entities and produce simple text lists and reports
- 1. Week 2
-      * Create a graphical output displaying the *scripts* as graphical nodes on appropriate row (*event*) and column (*sprite*) and the edges that connect them.
- 1. Week 3
-      * Make an (interactive) graphical application, with basic interaction and configuration (colors, order) and save / load the configuration.
- 1. Week 4
-      * Implement interactive editing / relocating of *sprites*, *events*, *scripts* and edges.
- 1. Week 5
-      * Export the layout to `pdf`, `json`, generic `xml`, `xlsx`, `ods`.
-      * Parse `scratch` v2 input
- 1. Week 6
-      * Prepare and test an initial standalone first version, ready to be used by users.
- 1. Week 7
-      * Display `scratch` comments and use them to pass special presentation directives
- 1. Week 8
-      * Identify and implement rules for better placement of nodes and edges, and provide options for their selection.
- 1. Week 9
-      * identify additional required interactive functionality, ...
- 1. Week 10
-      * ...
-    
-### More about *codeorama*
+4. **Export Visualization/Data:**  
+   Use File → "Export Visualization" to open the export dialog and choose from multiple export formats (PDF, Text, CSV, Excel, JSON, or Image).
 
-### More about this project
+5. **Configuration:**  
+   Use View → "Configure Layout" to reorder sprites and events or adjust other layout settings.
 
-[Here](Ideas.html) are some more technical details and implementation ideas / discussion, that one can adopt to his proposal.
+6. **Interact with the Visualization:**  
+   The interactive display supports zooming, panning (via the matplotlib navigation toolbar), and can be updated dynamically as you change settings.
 
-Throughout this project, we will monitor and discuss the progress of the project. Tassos Ladias, one of the *codeOrama* designers, participates in the support of this project.
- 
-For easier code mainenance, `python` is preferred but not required.
+---
 
-Each proposal will specify the implementation language, environment, tools, application model, firsti steps, milestones, ...
+## Visualization Modes
 
-You can ask general questions on the forum, and we can discuss specific parts of your proposal on private messages.
+### Grid View
+
+- **Layout:** Sprites are arranged as columns and events as rows.
+- **Content:** Each cell contains scripts (which can be folded or unfolded).
+- **Connections:** Arrows connect broadcast blocks to corresponding receive blocks.
+
+### Graph View
+
+- **Layout:** A force-directed (spring) or alternative layout (kamada_kawai, spectral) graph is generated using networkx.
+- **Nodes:** Sprites are larger nodes, whereas individual scripts are smaller nodes.
+- **Connections:** Directed edges indicate message connections between scripts.
+
+### Tree View
+
+- **Layout:** Displays a hierarchical tree starting from a specified root event.
+- **Flow:** A breadth-first layout shows scripts triggered from the root and their subsequent broadcasts.
+- **Usage:** Particularly useful to trace execution flow starting from a key event.
+
+---
+
+## Export Options
+
+The export module (`export.py`) supports:
+
+- **PDF Export:** Creates a formatted PDF with a table-like representation and connection details.
+- **Text Report:** Generates a plain text layout with detailed script information.
+- **CSV Export:** Outputs an edge list (source, event, message, target).
+- **Excel/LibreCalc Export:** Produces a workbook with multiple sheets (grid, connections, scripts).
+- **JSON Export:** Outputs structured JSON for integration with other tools.
+- **Image Export:** Saves the current visualization as PNG, SVG, or PDF.
+
+---
+
+## Configuration & Customization
+
+The application allows you to customize the visualization:
+- **Order Customization:** Use the configuration dialogs (in `config_dialogs.py`) to manually adjust the order of sprites (columns) and events (rows). Automatic ordering (topological for events or connectivity-based for sprites) is also available.
+- **Script Folding:** You can fold scripts to see a compact view or unfold them for full detail.
+- **Color & Edge Customization:** Currently, some defaults are set; planned improvements include interactive editing of node and edge names and colors.
+
+Settings are saved using QSettings and can be exported/imported via JSON files.
+
+---
