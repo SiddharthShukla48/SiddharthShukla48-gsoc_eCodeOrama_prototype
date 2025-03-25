@@ -100,8 +100,7 @@ The project depends on the following Python packages (see [requirements.txt](req
 1. **Clone the repository:**
 
    ```bash
-   [git clone https://github.com/sarantos40/eCodeOrama.git](https://github.com/SiddharthShukla48/SiddharthShukla48-gsoc_eCodeOrama_prototype.git)
-   cd eCodeOrama
+   git clone https://github.com/sarantos40/eCodeOrama.git](https://github.com/SiddharthShukla48/SiddharthShukla48-gsoc_eCodeOrama_prototype.git
    ```
 
 2. **(Optional) Create and activate a virtual environment:**
