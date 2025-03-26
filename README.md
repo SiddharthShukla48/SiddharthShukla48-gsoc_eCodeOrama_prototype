@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # eCodeOrama
 
 eCodeOrama is an interactive educational tool for visualizing and analyzing the flow of Scratch programs. It extracts program data from MIT Scratch (.sb3) files, then displays the relationships between sprites, events, and scripts in a variety of ways—including grid, graph, and tree layouts. The output is compatible with the traditional CodeOrama layout and also supports exports (PDF, text, CSV, Excel, JSON, and images) for further analysis or presentation.
@@ -101,8 +100,7 @@ The project depends on the following Python packages (see [requirements.txt](req
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/sarantos40/eCodeOrama.git
-   cd eCodeOrama
+   git clone https://github.com/sarantos40/eCodeOrama.git](https://github.com/SiddharthShukla48/SiddharthShukla48-gsoc_eCodeOrama_prototype.git
    ```
 
 2. **(Optional) Create and activate a virtual environment:**
